@@ -746,11 +746,21 @@
     $('#set-buttons').addEventListener('change', e => { s().soundButtons = e.target.checked; Model.save(); });
     $('#set-unlock').addEventListener('change', e => { s().unlockAll = e.target.checked; Model.save(); });
     $('#set-start').addEventListener('change', e => { s().unlockTo = e.target.value || null; Model.save(); });
-    $('#set-reset').addEventListener('click', () => {
-      if (confirm('Reset all stars and the traffic-light history? Settings are kept.')) {
-        Model.reset();
-        renderParent();
+    // Two taps to reset (no pop-up dialogs, so it also works when embedded).
+    let resetArmed = null;
+    $('#set-reset').addEventListener('click', e => {
+      const btn = e.currentTarget;
+      if (!resetArmed) {
+        btn.textContent = 'Tap again to delete all stars and history';
+        resetArmed = setTimeout(() => { resetArmed = null; btn.textContent = 'Reset progress'; }, 4000);
+        return;
       }
+      clearTimeout(resetArmed);
+      resetArmed = null;
+      Model.reset();
+      btn.textContent = 'Progress reset';
+      renderParent();
+      setTimeout(() => { btn.textContent = 'Reset progress'; }, 2000);
     });
   }
 
