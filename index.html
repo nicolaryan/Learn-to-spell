@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff6e9">
+  <title>Spelling Stars</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Andika is designed for early readers (single-storey "a" and "g"). Falls back gracefully offline. -->
+  <link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="confetti" aria-hidden="true"></div>
+
+  <!-- HOME -->
+  <main id="screen-home" class="screen active">
+    <button class="grownups-btn" data-grownups>👪 Grown-ups</button>
+    <div class="home-inner">
+      <div id="home-mascot"></div>
+      <h1 class="title">Spelling <span>Stars</span></h1>
+      <p id="home-greeting" class="greeting">Hi there!</p>
+      <button id="play-btn" class="btn play">▶ Play</button>
+      <p id="no-speech" class="warn" hidden>This browser can't speak words out loud. Try Chrome, Edge or Safari.</p>
+    </div>
+  </main>
+
+  <!-- LEVEL MAP -->
+  <main id="screen-map" class="screen">
+    <header class="topbar">
+      <button class="icon-btn" data-go-home aria-label="Home">🏠</button>
+      <div class="star-count">★ <span id="star-total">0</span></div>
+      <button class="icon-btn" data-grownups aria-label="Grown-ups">👪</button>
+    </header>
+    <div id="map-list" class="map-list"></div>
+  </main>
+
+  <!-- GAME -->
+  <main id="screen-game" class="screen">
+    <header class="topbar">
+      <button id="game-home" class="icon-btn" aria-label="Back to map">🗺️</button>
+      <div class="game-head">
+        <div id="game-level-name" class="level-name"></div>
+        <div id="game-progress" class="progress"></div>
+      </div>
+      <div id="game-mascot" class="game-mascot"></div>
+    </header>
+    <section class="play-area">
+      <button id="game-picture" class="picture" aria-label="Hear the word"></button>
+      <button id="game-listen" class="btn listen">🔊 Hear it again</button>
+      <p id="game-instruction" class="instruction">Spell the word</p>
+      <div id="game-slots" class="slots"></div>
+      <p id="game-feedback" class="feedback" aria-live="polite"></p>
+      <div id="game-tray" class="tray"></div>
+      <div id="game-actions" class="actions"></div>
+    </section>
+  </main>
+
+  <!-- RESULT -->
+  <main id="screen-result" class="screen">
+    <div class="result-inner">
+      <div id="result-mascot"></div>
+      <h1 id="result-title" class="title small"></h1>
+      <div id="result-stars" class="result-stars"></div>
+      <p id="result-sub" class="greeting"></p>
+      <div id="result-actions" class="actions"></div>
+    </div>
+  </main>
+
+  <!-- GROWN-UPS GATE -->
+  <main id="screen-gate" class="screen">
+    <form id="gate-form" class="gate">
+      <h2>Grown-ups only</h2>
+      <p id="gate-question" class="gate-q"></p>
+      <input id="gate-input" type="number" inputmode="numeric" autocomplete="off" aria-label="Answer">
+      <p id="gate-error" class="warn"></p>
+      <div class="actions">
+        <button type="button" id="gate-cancel" class="btn ghost">Back</button>
+        <button type="submit" class="btn primary">Go</button>
+      </div>
+    </form>
+  </main>
+
+  <!-- PARENT CORNER -->
+  <main id="screen-parent" class="screen parent">
+    <header class="parent-top">
+      <h1>Grown-ups' corner</h1>
+      <button id="parent-back" class="btn ghost">← Back to game</button>
+    </header>
+
+    <section class="card" id="parent-summary"></section>
+
+    <section class="card legend">
+      <h2>Sounds by ELS phase</h2>
+      <p>Each sound is coloured by how often it was spelled right <em>first time</em> in her last 8 goes. A sound is checked every time it appears in a word, not just in its own level.</p>
+      <ul class="legend-list">
+        <li><span class="chip green mini"></span> Confident – 4+ goes, 80%+ right</li>
+        <li><span class="chip amber mini"></span> Getting there – learning, or only a few goes so far</li>
+        <li><span class="chip red mini"></span> Needs practice – under half right recently</li>
+        <li><span class="chip none mini"></span> Not tried yet</li>
+      </ul>
+      <p class="muted">Tap any sound to see her recent mix-ups (e.g. <b>rain → rayn</b>).</p>
+    </section>
+
+    <div id="parent-phases"></div>
+
+    <section class="card settings">
+      <h2>Settings</h2>
+      <label>Child's name <input id="set-name" type="text" maxlength="20" placeholder="Used in greetings"></label>
+      <label>Start from level
+        <select id="set-start"></select>
+        <small>Unlocks every level up to this one, e.g. jump to Phase 5 for Year 1.</small>
+      </label>
+      <label>Speaking speed
+        <input id="set-rate" type="range" min="0.6" max="1.1" step="0.05">
+      </label>
+      <label>Voice <select id="set-voice"></select></label>
+      <label class="check"><input id="set-buttons" type="checkbox"> Show sound buttons (dots and dashes) under the letters</label>
+      <label class="check"><input id="set-sound" type="checkbox"> Sound effects</label>
+      <label class="check"><input id="set-unlock" type="checkbox"> Unlock all levels</label>
+      <button id="set-reset" class="btn danger">Reset progress</button>
+    </section>
+  </main>
+
+  <dialog id="detail" class="detail">
+    <div id="detail-body"></div>
+    <button id="detail-close" class="btn primary">Close</button>
+  </dialog>
+
+  <!-- Ollie the owl -->
+  <template id="mascot-template">
+    <div class="mascot">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <ellipse cx="60" cy="112" rx="34" ry="5" fill="rgba(0,0,0,.08)"/>
+        <path d="M24 46 L30 18 L46 36 Z" fill="#7b5ea7"/>
+        <path d="M96 46 L90 18 L74 36 Z" fill="#7b5ea7"/>
+        <ellipse cx="60" cy="68" rx="40" ry="42" fill="#9b7fd1"/>
+        <ellipse cx="60" cy="80" rx="26" ry="26" fill="#e9dcff"/>
+        <g class="eyes">
+          <circle cx="44" cy="54" r="15" fill="#fff"/>
+          <circle cx="76" cy="54" r="15" fill="#fff"/>
+          <circle class="pupil" cx="46" cy="56" r="7" fill="#2d2346"/>
+          <circle class="pupil" cx="74" cy="56" r="7" fill="#2d2346"/>
+          <circle cx="48" cy="53" r="2.4" fill="#fff"/>
+          <circle cx="76" cy="53" r="2.4" fill="#fff"/>
+        </g>
+        <path d="M54 66 L66 66 L60 76 Z" fill="#ffb347"/>
+        <path d="M22 70 Q12 86 26 96" stroke="#7b5ea7" stroke-width="8" fill="none" stroke-linecap="round" class="wing-l"/>
+        <path d="M98 70 Q108 86 94 96" stroke="#7b5ea7" stroke-width="8" fill="none" stroke-linecap="round" class="wing-r"/>
+        <path d="M48 108 l-4 6 M52 108 l0 7 M56 108 l4 6" stroke="#ffb347" stroke-width="3" stroke-linecap="round"/>
+        <path d="M64 108 l-4 6 M68 108 l0 7 M72 108 l4 6" stroke="#ffb347" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </template>
+
+  <script src="js/curriculum.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/model.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
